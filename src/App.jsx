@@ -1,5 +1,10 @@
 import "./App.css";
 import {
+    Accordion,
+    AccordionButton,
+    AccordionIcon,
+    AccordionItem,
+    AccordionPanel,
     Box,
     Button,
     Card,
@@ -44,7 +49,10 @@ import {
 } from "react-icons/ti";
 import { TbClockSearch } from "react-icons/tb";
 import { getCities } from "../services/CityService/cityService";
-import { getCurrentWeather, getForecastWeather } from "../services/WeatherService/weatherService";
+import {
+    getCurrentWeather,
+    getForecastWeather,
+} from "../services/WeatherService/weatherService";
 
 // import {
 //     CITY_API_URL,
@@ -1255,10 +1263,10 @@ const App = () => {
     // weather from weather api
     const [currentWeather, setCurrentWeather] = useState(w);
     const [forecast, setForecast] = useState(f);
-    const [filteredForecast , setFilteredForecast] = useState([]);
+    const [filteredForecast, setFilteredForecast] = useState([]);
 
     // current weekday and month
-    const [date , setDate] = useState("") ;
+    const [date, setDate] = useState("");
 
     const searchInputRef = useRef(null);
     const loadingBarRef = useRef(null);
@@ -1293,26 +1301,26 @@ const App = () => {
                 city.latitude,
                 city.longitude
             );
-            const { data : forecastData } = await getForecastWeather(city.latitude ,
-                city.longitude);
+            const { data: forecastData } = await getForecastWeather(
+                city.latitude,
+                city.longitude
+            );
 
-                let x = [];
-                let k = [];
+            let x = [];
+            let k = [];
 
-                forecastData.list.map((i) => {
-                    const d = i.dt_txt;
-                    if (!x.includes(d.split(" ")[0])) {
+            forecastData.list.map((i) => {
+                const d = i.dt_txt;
+                if (!x.includes(d.split(" ")[0])) {
+                    x.push(d.split(" ")[0]);
+                    k.push(i);
+                }
+            });
+            k.splice(0, 1);
 
-                        x.push(d.split(" ")[0]);
-                        k.push(i);
-                    }
-                });
-                k.splice(0 , 1);
-                
             setForecast(forecastData);
             setCurrentWeather(data);
             setFilteredForecast(k);
-
 
             setCities([]);
             loadingBarRef.current.complete();
@@ -1345,12 +1353,12 @@ const App = () => {
         "Saturday",
     ];
 
-
     useEffect(() => {
-        const d = new Date() ;
-        setDate(`${weekday[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`)
-    } , [])
-
+        const d = new Date();
+        setDate(
+            `${weekday[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`
+        );
+    }, []);
 
     // debouncing for search input
     useEffect(() => {
@@ -1371,8 +1379,6 @@ const App = () => {
 
         return () => clearTimeout(delayInputTimeoutId);
     }, [searchQuery, 500]);
-
-
 
     return (
         <>
@@ -1549,9 +1555,7 @@ const App = () => {
                             >
                                 <Text>Today</Text>
                                 {/* <Text>Fri 5 jan</Text> */}
-                                <Text>
-                                    {date}
-                                </Text>
+                                <Text>{date}</Text>
                             </Flex>
                             <Flex justifyContent="center" mt="1px">
                                 <FaLocationDot style={{ marginTop: "3px" }} />
@@ -1568,29 +1572,41 @@ const App = () => {
                                 <SimpleGrid minChildWidth="160px" spacing={4}>
                                     {filteredForecast.map((item, index) => {
                                         return (
-                                            <Card key={index} p="0px" textAlign="center" display="flex">
-                                                    <CardBody>
-                                                
-                                                    <Heading size="sm">{
-                                                        item.dt_txt.split(" ")[0]
-                                                    }</Heading>
-                                                
-                                                    <Image
-                                                    boxSize="80px"
-                                                    m="0 auto"
-                                                    src={`../assets/weatherImages/${item.weather[0].icon}.png`}
-                                                    
-                                                    >
+                                            <Card
+                                                key={index}
+                                                p="0px"
+                                                textAlign="center"
+                                                display="flex"
+                                            >
+                                                <CardBody>
+                                                    <Heading size="sm">
+                                                        {
+                                                            item.dt_txt.split(
+                                                                " "
+                                                            )[0]
+                                                        }
+                                                    </Heading>
 
-                                                    </Image>
+                                                    <Image
+                                                        boxSize="80px"
+                                                        m="0 auto"
+                                                        src={`../assets/weatherImages/${item.weather[0].icon}.png`}
+                                                    ></Image>
 
                                                     <Flex m="3px 10px">
                                                         <Text>
-                                                            {parseInt(item.main.temp) - 273 } °C
+                                                            {parseInt(
+                                                                item.main.temp
+                                                            ) - 273}{" "}
+                                                            °C
                                                         </Text>
                                                         <Spacer />
                                                         <Text>
-                                                            {parseInt(item.main.humidity)}%
+                                                            {parseInt(
+                                                                item.main
+                                                                    .humidity
+                                                            )}
+                                                            %
                                                         </Text>
                                                     </Flex>
                                                 </CardBody>
@@ -1600,94 +1616,244 @@ const App = () => {
                                 </SimpleGrid>
                             </Box>
 
-
-
-                            <Box className="details" m="30px 5px 0px 5px" >
-                                    <Heading>
-                                        Today's Highlights
-                                    </Heading>
-                                    <SimpleGrid minChildWidth="350px" mt="20px" spacing={5}>
-                                        <Card>
-                                            <CardBody textAlign="center">
-                                                <Heading size="md">
-                                                    Wind status
-                                                </Heading>
+                            <Box className="details" m="30px 5px 0px 5px">
+                                <Heading>Today's Highlights</Heading>
+                                <SimpleGrid
+                                    minChildWidth="350px"
+                                    mt="20px"
+                                    spacing={5}
+                                >
+                                    <Card>
+                                        <CardBody textAlign="center">
+                                            <Heading size="md">
+                                                Wind status
+                                            </Heading>
+                                            <Text>
+                                                {currentWeather.wind.speed} m/s
+                                            </Text>
+                                            <Text>
+                                                direction :{" "}
+                                                {currentWeather.wind.deg}°
+                                            </Text>
+                                        </CardBody>
+                                    </Card>
+                                    <Card>
+                                        <CardBody textAlign="center">
+                                            <Heading size="md">
+                                                Humidity
+                                            </Heading>
+                                            <Progress
+                                                colorScheme="green"
+                                                h="5px"
+                                                value={parseInt(
+                                                    currentWeather.main.humidity
+                                                )}
+                                            />
+                                            <Text>
+                                                {parseInt(
+                                                    currentWeather.main.humidity
+                                                )}
+                                                %
+                                            </Text>
+                                        </CardBody>
+                                    </Card>
+                                    <Card>
+                                        <CardBody textAlign="center">
+                                            <Heading size="md">
+                                                Visibility
+                                            </Heading>
+                                            <Text>
+                                                {parseInt(
+                                                    currentWeather.visibility
+                                                ) / 1000}{" "}
+                                                km
+                                            </Text>
+                                        </CardBody>
+                                    </Card>
+                                    <Card>
+                                        <CardBody textAlign="center">
+                                            <Heading size="md">
+                                                Air pressure
+                                            </Heading>
+                                            <Text>
+                                                {parseInt(
+                                                    currentWeather.main.pressure
+                                                ) / 1000}{" "}
+                                                atm
+                                            </Text>
+                                        </CardBody>
+                                    </Card>
+                                    <Card>
+                                        <CardBody textAlign="center">
+                                            <Heading size="md">
+                                                Cloudiness
+                                            </Heading>
+                                            <Text>
+                                                {currentWeather.clouds.all} %
+                                            </Text>
+                                        </CardBody>
+                                    </Card>
+                                    <Card>
+                                        <CardBody textAlign="center">
+                                            <Heading size="ms">
+                                                Min and Max temp
+                                            </Heading>
+                                            <Box>
                                                 <Text>
-                                                    {currentWeather.wind.speed} m/s
+                                                    Min :{" "}
+                                                    {parseInt(
+                                                        currentWeather.main
+                                                            .temp_min
+                                                    ) - 273}{" "}
+                                                    °C
                                                 </Text>
                                                 <Text>
-                                                    direction : {currentWeather.wind.deg}°
+                                                    Max :{" "}
+                                                    {parseInt(
+                                                        currentWeather.main
+                                                            .temp_max
+                                                    ) - 273}{" "}
+                                                    °C
                                                 </Text>
-                                            </CardBody>
-                                        </Card>
-                                        <Card>
-                                            <CardBody textAlign="center">
-                                                <Heading size="md">
-                                                    Humidity
-                                                </Heading>
-                                                    <Progress colorScheme="green" h="5px" value={parseInt(currentWeather.main.humidity)} />
-                                                <Text>
-                                                    {parseInt(currentWeather.main.humidity)}%   
-                                                </Text>
-                                            </CardBody>
-                                        </Card>
-                                        <Card>
-                                            <CardBody textAlign="center">
-                                                <Heading size="md">
-                                                    Visibility
-                                                </Heading>
-                                                <Text>
-                                                    {parseInt(currentWeather.visibility)/1000} km
-                                                </Text>
-                                            </CardBody>
-                                        </Card>
-                                        <Card>
-                                            <CardBody textAlign="center">
-                                                <Heading size="md">
-                                                    Air pressure
-                                                </Heading>
-                                                <Text>
-                                                    {parseInt(currentWeather.main.pressure)/1000} atm
-                                                </Text>
-                                            </CardBody>
-                                        </Card>
-                                        <Card>
-                                            <CardBody textAlign="center">
-                                                <Heading size="md">
-                                                    Cloudiness
-                                                </Heading>
-                                                <Text>
-                                                    {currentWeather.clouds.all} %
-                                                </Text>
-                                            </CardBody>
-                                        </Card>
-                                        <Card>
-                                            <CardBody textAlign="center">
-                                                <Heading size="ms" >
-                                                    Min and Max temp
-                                                </Heading>
-                                                <Box>
-                                                    <Text>
-                                                        Min : {parseInt(currentWeather.main.temp_min) - 273} °C
-                                                    </Text>
-                                                    <Text>
-                                                        Max : {parseInt(currentWeather.main.temp_max) - 273} °C
-                                                    </Text>
-                                                </Box>
-                                            </CardBody>
-                                        </Card>
-                                    </SimpleGrid>
-
+                                            </Box>
+                                        </CardBody>
+                                    </Card>
+                                </SimpleGrid>
                             </Box>
                         </Box>
-
                     ) : null}
 
                     {sidebarStatus[1] === 1 ? (
-                        <Box>
-                            <Text>detailed forecast</Text>
+                        <Box m="0px 15px">
+                            <Heading mt="20px" mb="15px">
+                                Detailed forecast
+                            </Heading>
+                            <Box mt="30px" p="0 50px">
+                                <Accordion allowMultiple>
+                                    {filteredForecast.map((item) => {
+                                        return (
+                                            <AccordionItem key={item.id}>
+                                                <h2>
+                                                    <AccordionButton>
+                                                        <Box
+                                                            as="span"
+                                                            flex="1"
+                                                            textAlign="left"
+                                                        >
+                                                            {
+                                                                item.dt_txt.split(
+                                                                    " "
+                                                                )[0]
+                                                            }
+                                                        </Box>
+                                                        <AccordionIcon />
+                                                    </AccordionButton>
+                                                </h2>
+                                                <AccordionPanel pb={4}>
+                                                    <Box>
+                                                        <Flex
+                                                            justifyContent="center"
+                                                            alignContent="center"
+                                                        >
+                                                            <Image
+                                                                src={`../assets/weatherImages/${item.weather[0].icon}.png`}
+                                                                mr="10px"
+                                                            />
+                                                            <Flex
+                                                                direction="column"
+                                                                align="center"
+                                                                justifyContent="center"
+                                                            >
+                                                                <Text>
+                                                                    {
+                                                                        item
+                                                                            .weather[0]
+                                                                            .main
+                                                                    }
+                                                                </Text>
+                                                                <Text>
+                                                                    {parseInt(
+                                                                        item
+                                                                            .main
+                                                                            .temp
+                                                                    ) -
+                                                                        273}{" "}
+                                                                    °C
+                                                                </Text>
+                                                            </Flex>
+                                                        </Flex>
+                                                        <SimpleGrid minChildWidth="200px">
+                                                            <Flex direction="column" alignItems="center">
+                                                                <Text>
+                                                                    Description
+                                                                    :{" "}
+                                                                    {
+                                                                        item
+                                                                            .weather[0]
+                                                                            .description
+                                                                    }
+                                                                </Text>
+                                                                <Text>
+                                                                    Wind speed :{" "}
+                                                                    {
+                                                                        item
+                                                                            .wind
+                                                                            .speed
+                                                                    }{" "}
+                                                                    m/s
+                                                                </Text>
+                                                                <Text>
+                                                                    Wind
+                                                                    direction :{" "}
+                                                                    {
+                                                                        item
+                                                                            .wind
+                                                                            .deg
+                                                                    }
+                                                                    °
+                                                                </Text>
+                                                            </Flex>
+                                                            <Flex direction="column" alignItems="center">
+                                                                <Text>
+                                                                    Humidity :{" "}
+                                                                    {parseInt(
+                                                                        item
+                                                                            .main
+                                                                            .humidity
+                                                                    )}
+                                                                    %
+                                                                </Text>
+                                                                <Text>
+                                                                    Visibility :{" "}
+                                                                    {parseInt(
+                                                                        item.visibility
+                                                                    ) /
+                                                                        1000}{" "}
+                                                                    km
+                                                                </Text>
+                                                                <Text>
+                                                                    Air pressure
+                                                                    :{" "}
+                                                                    {parseInt(
+                                                                        item
+                                                                            .main
+                                                                            .pressure
+                                                                    ) /
+                                                                        1000}{" "}
+                                                                    atm
+                                                                </Text>
+                                                            </Flex>
+                                                        </SimpleGrid>
+                                                    </Box>
+                                                </AccordionPanel>
+                                            </AccordionItem>
+                                        );
+                                    })}
+                                </Accordion>
+                            </Box>
                         </Box>
                     ) : null}
+
                     {sidebarStatus[2] === 1 ? (
                         <Box>
                             <Text>Air pollution</Text>

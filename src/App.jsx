@@ -41,6 +41,7 @@ import {
     useColorMode,
     useColorModeValue,
     useDisclosure,
+    useToast,
 } from "@chakra-ui/react";
 import LoadingBar from "react-top-loading-bar";
 import { useEffect, useRef, useState } from "react";
@@ -72,6 +73,8 @@ import {
     getForecastWeather,
 } from "../services/WeatherService/weatherService";
 import SearchModal from "./components/SearchModal";
+import RecentLocations from "./components/MenuComponents/RecentLocations";
+import { SlLocationPin } from "react-icons/sl";
 
 // import {
 //     CITY_API_URL,
@@ -1306,11 +1309,23 @@ const App = () => {
         "whiteAlpha.50",
         "BlackAlpha.900"
     );
+    const sidebarButtonColor = useColorModeValue("white", "whiteAlpha.400");
+
+    //  toast
+    const toast = useToast();
 
     const handleCitiesSearch = async (query) => {
-        const { data } = await getCities(query);
+        try {
+            const { data } = await getCities(query);
+            setCities(data.data.reverse());
+        } catch (err) {
+            toast({
+                title: "server error .",
+                status: "error",
+                isClosable: true,
+            });
+        }
 
-        setCities(data.data.reverse());
         setShowSearchSpinner(false);
     };
 
@@ -1355,11 +1370,17 @@ const App = () => {
 
             setCities([]);
 
-
             // local storage for recent locations
             if (localStorage.getItem("cities") !== null) {
                 let arr = JSON.parse(localStorage.getItem("cities"));
-                if (!arr.includes(city)) {
+
+                let x = false;
+                arr.map((i) => {
+                    if (i.city === city.city) {
+                        x = true;
+                    }
+                });
+                if (x === false) {
                     arr.push(city);
                 }
                 localStorage.setItem("cities", JSON.stringify(arr));
@@ -1367,10 +1388,12 @@ const App = () => {
                 const arr = [city];
                 localStorage.setItem("cities", JSON.stringify(arr));
             }
-           
         } catch (err) {
-            console.log(err);
-
+            toast({
+                title: "server error .",
+                status: "error",
+                isClosable: true,
+            });
         }
         loadingBarRef.current.complete();
     };
@@ -1416,7 +1439,11 @@ const App = () => {
                 try {
                     handleCitiesSearch(searchQuery);
                 } catch (err) {
-                    console.log(err);
+                    toast({
+                        title: "server error .",
+                        status: "error",
+                        isClosable: true,
+                    });;
                 }
             } else {
                 setCities([]);
@@ -1424,11 +1451,11 @@ const App = () => {
         }, 600);
 
         return () => clearTimeout(delayInputTimeoutId);
-    }, [searchQuery, 500]);
+    }, [searchQuery, 900]);
 
     return (
         <>
-            <LoadingBar color="blue" ref={loadingBarRef} />
+            <LoadingBar color="#38B2AC" ref={loadingBarRef} />
 
             <SearchModal
                 searchInputRef={searchInputRef}
@@ -1439,7 +1466,7 @@ const App = () => {
                 onOpen={onOpen}
                 isOpen={isOpen}
                 onClose={onClose}
-                showSearchSpinner ={showSearchSpinner }
+                showSearchSpinner={showSearchSpinner}
             />
 
             {/* main content */}
@@ -1453,10 +1480,12 @@ const App = () => {
                         bg={sidebarColor}
                     >
                         <Flex direction="column">
-                            <HStack my="5px" pr="3px">
+                            <HStack pr="3px">
                                 <IconButton
-                                    icon={<BiArrowBack />}
+                                    icon={<BiArrowBack size="21px" />}
                                     onClick={() => setShowMenu(!showMenu)}
+                                    style={{ borderRadius: "20px" }}
+                                    bg={sidebarButtonColor}
                                 />
                                 <Spacer />
                                 <Switch
@@ -1467,12 +1496,8 @@ const App = () => {
                                     isChecked={themeToggler ? true : false}
                                 />
                             </HStack>
-                            <Box>
-                                <Button
-                                    w="100%"
-                                    bg="telegram.100"
-                                    onClick={onOpen}
-                                >
+                            <Box mt="15px">
+                                <Button w="100%" onClick={onOpen}>
                                     <Flex alignItems="center" gap={3}>
                                         <GoSearch />
 
@@ -1488,8 +1513,6 @@ const App = () => {
                                 <List spacing={4}>
                                     <ListItem>
                                         <Button
-                                            variant="ghost"
-                                            colorScheme="teal"
                                             onClick={() => sidebarMenu(0)}
                                             w="100%"
                                             leftIcon={<TiWeatherPartlySunny />}
@@ -1539,18 +1562,22 @@ const App = () => {
                         <Flex direction="column" px={5}>
                             <Flex>
                                 <Button
-                                    colorScheme="teal"
+                                    bg={sidebarButtonColor}
+                                    pl="7px"
                                     variant="solid"
                                     size="sm"
+                                    fontWeight="400"
+                                    leftIcon={<SlLocationPin />}
                                     onClick={() => setShowMenu(!showMenu)}
                                 >
-                                    Search for cities.
+                                    Search location
                                 </Button>
                                 <Spacer />
                                 <IconButton
                                     size="sm"
-                                    colorScheme="teal"
+                                    bg={sidebarButtonColor}
                                     variant="solid"
+                                    style={{ borderRadius: "20px" }}
                                     icon={<FaLocationCrosshairs size={20} />}
                                 />
                             </Flex>
@@ -1959,24 +1986,9 @@ const App = () => {
                     ) : null}
 
                     {sidebarStatus[3] === 1 ? (
-                        <Box m="0px 15px">
-                            <Box mt="30px">
-                                <Heading>Recent locations :</Heading>
-                                <HStack>
-                                    {localStorage.getItem("cities") !== null
-                                        ? JSON.parse(
-                                              localStorage.getItem("cities")
-                                          ).map((item) => {
-                                              return (
-                                                  <Badge colorScheme="purple">
-                                                      {item.city}
-                                                  </Badge>
-                                              );
-                                          })
-                                        : null}
-                                </HStack>
-                            </Box>
-                        </Box>
+                        <RecentLocations
+                            handleWeatherSearch={handleWeatherSearch}
+                        />
                     ) : null}
                 </GridItem>
             </Grid>

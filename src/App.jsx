@@ -5,6 +5,7 @@ import {
     AccordionIcon,
     AccordionItem,
     AccordionPanel,
+    Badge,
     Box,
     Button,
     Card,
@@ -14,6 +15,7 @@ import {
     Flex,
     Grid,
     GridItem,
+    HStack,
     Heading,
     IconButton,
     Image,
@@ -34,20 +36,36 @@ import {
     SimpleGrid,
     Spacer,
     Spinner,
+    Switch,
     Text,
+    useColorMode,
+    useColorModeValue,
     useDisclosure,
 } from "@chakra-ui/react";
 import LoadingBar from "react-top-loading-bar";
 import { useEffect, useRef, useState } from "react";
-import { FaLocationCrosshairs, FaLocationDot } from "react-icons/fa6";
+import {
+    FaEye,
+    FaLocationCrosshairs,
+    FaLocationDot,
+    FaRegEye,
+} from "react-icons/fa6";
 import { GoSearch } from "react-icons/go";
-import { IoClose } from "react-icons/io5";
+import { BiArrowBack } from "react-icons/bi";
+import { WiStrongWind } from "react-icons/wi";
 import {
     TiWeatherPartlySunny,
     TiWeatherSnow,
     TiWeatherWindy,
 } from "react-icons/ti";
+import {
+    IoCloudOutline,
+    IoThermometerOutline,
+    IoTimerOutline,
+    IoWater,
+} from "react-icons/io5";
 import { TbClockSearch } from "react-icons/tb";
+import { BsThermometerSnow, BsThermometerSun } from "react-icons/bs";
 import { getCities } from "../services/CityService/cityService";
 import {
     getCurrentWeather,
@@ -1276,7 +1294,18 @@ const App = () => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
-    //
+    // dark mode featur
+    const { toggleColorMode } = useColorMode();
+    const [themeToggler, setThemeToggler] = useState(false);
+
+    // color mode values
+
+    const sidebarColor = useColorModeValue("whiteAlpha.50", "blue.900");
+    const mainSectionColor = useColorModeValue(
+        "whiteAlpha.50",
+        "BlackAlpha.900"
+    );
+
     const handleCitiesSearch = async (query) => {
         const { data } = await getCities(query);
 
@@ -1323,6 +1352,18 @@ const App = () => {
             setFilteredForecast(k);
 
             setCities([]);
+
+            // local storage for recent locations
+            if (localStorage.getItem("cities") !== null) {
+                let arr = JSON.parse(localStorage.getItem("cities"));
+                if (!arr.includes(city)) {
+                    arr.push(city);
+                }
+                localStorage.setItem("cities", JSON.stringify(arr));
+            } else {
+                const arr = [city];
+                localStorage.setItem("cities", JSON.stringify(arr));
+            }
             loadingBarRef.current.complete();
         } catch (err) {
             console.log(err);
@@ -1430,22 +1471,30 @@ const App = () => {
             </Modal>
 
             {/* main content */}
-            <Grid templateColumns="repeat(12 , 0.5fr)" bg="gray.500">
+            <Grid templateColumns="repeat(12 , 0.5fr)" bg={mainSectionColor}>
                 {showMenu ? (
                     <GridItem
                         as="aside"
                         colSpan={{ base: "12", md: "4", xl: "3" }}
                         minHeight="100vh"
                         p="20px"
-                        bg="purple.500"
+                        bg={sidebarColor}
                     >
                         <Flex direction="column">
-                            <Box dir="rtl" my="5px">
+                            <HStack my="5px" pr="3px">
                                 <IconButton
-                                    icon={<IoClose />}
+                                    icon={<BiArrowBack />}
                                     onClick={() => setShowMenu(!showMenu)}
                                 />
-                            </Box>
+                                <Spacer />
+                                <Switch
+                                    onChange={() => {
+                                        toggleColorMode();
+                                        setThemeToggler(!themeToggler);
+                                    }}
+                                    isChecked={themeToggler ? true : false}
+                                />
+                            </HStack>
                             <Box>
                                 <Button
                                     w="100%"
@@ -1513,7 +1562,7 @@ const App = () => {
                         colSpan={{ base: "12", md: "4", xl: "3" }}
                         minHeight="100vh"
                         p="20px"
-                        bg="purple.500"
+                        bg="purple.600"
                     >
                         <Flex direction="column" px={5}>
                             <Flex>
@@ -1568,7 +1617,7 @@ const App = () => {
                 <GridItem as="main" colSpan={{ base: "12", md: "8", xl: "9" }}>
                     {sidebarStatus[0] === 1 ? (
                         <Box m="0px 15px">
-                            <Box m="10px 5px">
+                            <Box m="20px 5px" pt="10px">
                                 <SimpleGrid minChildWidth="160px" spacing={4}>
                                     {filteredForecast.map((item, index) => {
                                         return (
@@ -1623,10 +1672,16 @@ const App = () => {
                                     mt="20px"
                                     spacing={5}
                                 >
-                                    <Card>
+                                    <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading size="md">
-                                                Wind status
+                                            <Heading mb="35px" size="md">
+                                                <HStack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                >
+                                                    <WiStrongWind size="40px" />
+                                                    <Text>Wind status</Text>
+                                                </HStack>
                                             </Heading>
                                             <Text>
                                                 {currentWeather.wind.speed} m/s
@@ -1637,19 +1692,27 @@ const App = () => {
                                             </Text>
                                         </CardBody>
                                     </Card>
-                                    <Card>
+                                    <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading size="md">
-                                                Humidity
+                                            <Heading mb="35px" size="md">
+                                                <HStack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                >
+                                                    <IoWater size="25px" />
+                                                    <Text>Humidity</Text>
+                                                </HStack>
                                             </Heading>
                                             <Progress
+                                                style={{ borderRadius: "12px" }}
+                                                mb="10px"
                                                 colorScheme="green"
-                                                h="5px"
+                                                h="10px"
                                                 value={parseInt(
                                                     currentWeather.main.humidity
                                                 )}
                                             />
-                                            <Text>
+                                            <Text as="i" fontSize="lg">
                                                 {parseInt(
                                                     currentWeather.main.humidity
                                                 )}
@@ -1657,12 +1720,18 @@ const App = () => {
                                             </Text>
                                         </CardBody>
                                     </Card>
-                                    <Card>
+                                    <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading size="md">
-                                                Visibility
+                                            <Heading mb="35px" size="md">
+                                                <HStack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                >
+                                                    <FaRegEye size="25px" />
+                                                    <Text>Visibility</Text>
+                                                </HStack>
                                             </Heading>
-                                            <Text>
+                                            <Text fontSize="lg" as="i">
                                                 {parseInt(
                                                     currentWeather.visibility
                                                 ) / 1000}{" "}
@@ -1670,12 +1739,18 @@ const App = () => {
                                             </Text>
                                         </CardBody>
                                     </Card>
-                                    <Card>
+                                    <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading size="md">
-                                                Air pressure
+                                            <Heading mb="35px" size="md">
+                                                <HStack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                >
+                                                    <IoTimerOutline size="21px" />
+                                                    <Text>Air pressure</Text>
+                                                </HStack>
                                             </Heading>
-                                            <Text>
+                                            <Text as="i" fontSize="lg">
                                                 {parseInt(
                                                     currentWeather.main.pressure
                                                 ) / 1000}{" "}
@@ -1683,38 +1758,64 @@ const App = () => {
                                             </Text>
                                         </CardBody>
                                     </Card>
-                                    <Card>
+                                    <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading size="md">
-                                                Cloudiness
+                                            <Heading mb="35px" size="md">
+                                                <HStack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                >
+                                                    <IoCloudOutline size="25px" />
+                                                    <Text>Cloudiness</Text>
+                                                </HStack>
                                             </Heading>
-                                            <Text>
+                                            <Text as="i" fontSize="lg">
                                                 {currentWeather.clouds.all} %
                                             </Text>
                                         </CardBody>
                                     </Card>
-                                    <Card>
+                                    <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading size="ms">
-                                                Min and Max temp
+                                            <Heading mb="35px" size="md">
+                                                <HStack
+                                                    alignItems="center"
+                                                    justifyContent="center"
+                                                >
+                                                    <IoThermometerOutline size="25px" />
+                                                    <Text>Temperature</Text>
+                                                </HStack>
                                             </Heading>
                                             <Box>
-                                                <Text>
-                                                    Min :{" "}
-                                                    {parseInt(
-                                                        currentWeather.main
-                                                            .temp_min
-                                                    ) - 273}{" "}
-                                                    °C
-                                                </Text>
-                                                <Text>
-                                                    Max :{" "}
-                                                    {parseInt(
-                                                        currentWeather.main
-                                                            .temp_max
-                                                    ) - 273}{" "}
-                                                    °C
-                                                </Text>
+                                                <Box>
+                                                    <HStack justifyContent="center" mb="10px">
+                                                        <BsThermometerSnow size="20px" />
+                                                        <Text  as="i" fontSize="lg">
+                                                            Min :{" "}
+                                                            {parseInt(
+                                                                currentWeather
+                                                                    .main
+                                                                    .temp_min
+                                                            ) - 273}{" "}
+                                                            °C
+                                                        </Text>
+                                                    </HStack>
+                                                   
+                                                </Box>
+                                                <Box>
+                                                    <HStack justifyContent="center">
+                                                        <BsThermometerSun size="20px" />
+                                                        <Text as="i" fontSize="lg">
+                                                            Max :{" "}
+                                                            {parseInt(
+                                                                currentWeather
+                                                                    .main
+                                                                    .temp_max
+                                                            ) - 273}{" "}
+                                                            °C
+                                                        </Text>
+                                                    </HStack>
+                                                   
+                                                </Box>
                                             </Box>
                                         </CardBody>
                                     </Card>
@@ -1783,7 +1884,10 @@ const App = () => {
                                                             </Flex>
                                                         </Flex>
                                                         <SimpleGrid minChildWidth="200px">
-                                                            <Flex direction="column" alignItems="center">
+                                                            <Flex
+                                                                direction="column"
+                                                                alignItems="center"
+                                                            >
                                                                 <Text>
                                                                     Description
                                                                     :{" "}
@@ -1813,7 +1917,10 @@ const App = () => {
                                                                     °
                                                                 </Text>
                                                             </Flex>
-                                                            <Flex direction="column" alignItems="center">
+                                                            <Flex
+                                                                direction="column"
+                                                                alignItems="center"
+                                                            >
                                                                 <Text>
                                                                     Humidity :{" "}
                                                                     {parseInt(
@@ -1861,8 +1968,23 @@ const App = () => {
                     ) : null}
 
                     {sidebarStatus[3] === 1 ? (
-                        <Box>
-                            <Text>Recent Places</Text>
+                        <Box m="0px 15px">
+                            <Box mt="30px">
+                                <Heading>Recent locations :</Heading>
+                                <HStack>
+                                    {localStorage.getItem("cities") !== null
+                                        ? JSON.parse(
+                                              localStorage.getItem("cities")
+                                          ).map((item) => {
+                                              return (
+                                                  <Badge colorScheme="purple">
+                                                      {item.city}
+                                                  </Badge>
+                                              );
+                                          })
+                                        : null}
+                                </HStack>
+                            </Box>
                         </Box>
                     ) : null}
                 </GridItem>

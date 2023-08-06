@@ -71,6 +71,7 @@ import {
     getCurrentWeather,
     getForecastWeather,
 } from "../services/WeatherService/weatherService";
+import SearchModal from "./components/SearchModal";
 
 // import {
 //     CITY_API_URL,
@@ -1300,7 +1301,7 @@ const App = () => {
 
     // color mode values
 
-    const sidebarColor = useColorModeValue("whiteAlpha.50", "blue.900");
+    const sidebarColor = useColorModeValue("yellow.50", "blue.900");
     const mainSectionColor = useColorModeValue(
         "whiteAlpha.50",
         "BlackAlpha.900"
@@ -1325,6 +1326,7 @@ const App = () => {
 
     // handle weather search
     const handleWeatherSearch = async (city) => {
+        loadingBarRef.current.continuousStart();
         try {
             const { data } = await getCurrentWeather(
                 city.latitude,
@@ -1353,6 +1355,7 @@ const App = () => {
 
             setCities([]);
 
+
             // local storage for recent locations
             if (localStorage.getItem("cities") !== null) {
                 let arr = JSON.parse(localStorage.getItem("cities"));
@@ -1364,10 +1367,12 @@ const App = () => {
                 const arr = [city];
                 localStorage.setItem("cities", JSON.stringify(arr));
             }
-            loadingBarRef.current.complete();
+           
         } catch (err) {
             console.log(err);
+
         }
+        loadingBarRef.current.complete();
     };
 
     const months = [
@@ -1423,52 +1428,19 @@ const App = () => {
 
     return (
         <>
-            <LoadingBar color="#f11946" ref={loadingBarRef} />
+            <LoadingBar color="blue" ref={loadingBarRef} />
 
-            <Modal isOpen={isOpen} onClose={onClose} scrollBehavior="inside">
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalBody>
-                        <InputGroup>
-                            <InputRightElement>
-                                {showSearchSpinner ? <Spinner /> : null}
-                            </InputRightElement>
-
-                            <Input
-                                type="text"
-                                ref={searchInputRef}
-                                placeholder="search for city ..."
-                                onSubmit={(e) => {
-                                    e.preventDefault();
-                                    console.log("problem solved");
-                                }}
-                                onChange={(e) =>
-                                    setSearchQuery(e.target.value.toLowerCase())
-                                }
-                            />
-                        </InputGroup>
-                        <Box mt="10px">
-                            {cities.map((city) => {
-                                return (
-                                    <Button
-                                        w="100%"
-                                        my="2px"
-                                        key={city.id}
-                                        onClick={() => {
-                                            loadingBarRef.current.continuousStart();
-                                            handleWeatherSearch(city);
-                                            onClose();
-                                            setShowMenu(false);
-                                        }}
-                                    >
-                                        <Text>{city.city}</Text>
-                                    </Button>
-                                );
-                            })}
-                        </Box>
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
+            <SearchModal
+                searchInputRef={searchInputRef}
+                setSearchQuery={setSearchQuery}
+                cities={cities}
+                handleWeatherSearch={handleWeatherSearch}
+                setShowMenu={setShowMenu}
+                onOpen={onOpen}
+                isOpen={isOpen}
+                onClose={onClose}
+                showSearchSpinner ={showSearchSpinner }
+            />
 
             {/* main content */}
             <Grid templateColumns="repeat(12 , 0.5fr)" bg={mainSectionColor}>
@@ -1667,7 +1639,7 @@ const App = () => {
                                                                 )}
                                                                 %
                                                             </Text>
-                                                            <IoWater  />
+                                                            <IoWater />
                                                         </HStack>
                                                     </Flex>
                                                 </CardBody>

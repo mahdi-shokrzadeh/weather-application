@@ -1294,7 +1294,7 @@ const App = () => {
     const loadingBarRef = useRef(null);
 
     // sidebar menu
-    const [sidebarStatus, setSidebarStatus] = useState([1, 0, 0, 0]);
+    const [sidebarStatus, setSidebarStatus] = useState([1, 0, 0]);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -1322,6 +1322,7 @@ const App = () => {
             toast({
                 title: "server error .",
                 status: "error",
+                duration: 5000,
                 isClosable: true,
             });
         }
@@ -1392,6 +1393,7 @@ const App = () => {
             toast({
                 title: "server error .",
                 status: "error",
+                duration: 5000,
                 isClosable: true,
             });
         }
@@ -1442,8 +1444,9 @@ const App = () => {
                     toast({
                         title: "server error .",
                         status: "error",
+                        duration: 5000,
                         isClosable: true,
-                    });;
+                    });
                 }
             } else {
                 setCities([]);
@@ -1533,15 +1536,6 @@ const App = () => {
                                         <Button
                                             w="100%"
                                             onClick={() => sidebarMenu(2)}
-                                            leftIcon={<TiWeatherWindy />}
-                                        >
-                                            <Text>Air pollution</Text>
-                                        </Button>
-                                    </ListItem>
-                                    <ListItem>
-                                        <Button
-                                            w="100%"
-                                            onClick={() => sidebarMenu(3)}
                                             leftIcon={<TbClockSearch />}
                                         >
                                             <Text>Recent locations</Text>
@@ -1560,7 +1554,7 @@ const App = () => {
                         bg={sidebarColor}
                     >
                         <Flex direction="column" px={5}>
-                            <Flex>
+                            <Flex mb="40px">
                                 <Button
                                     bg={sidebarButtonColor}
                                     pl="7px"
@@ -1582,33 +1576,47 @@ const App = () => {
                                 />
                             </Flex>
 
-                            <Flex justifyContent="center">
+                            <Flex justifyContent="center" mb="50px">
                                 <Image
+                                    boxSize="120px"
                                     src={`../assets/weatherImages/${currentWeather.weather[0].icon}.png`}
                                 />
                             </Flex>
                             <Flex justifyContent="center">
-                                <Text>
+                                <Text as="b" fontSize="45px">
                                     {parseInt(currentWeather.main.temp) - 273}{" "}
                                     °C
                                 </Text>
                             </Flex>
-                            <Flex justifyContent="center">
-                                <Text>{currentWeather.weather[0].main}</Text>
+                            <Flex justifyContent="center" mb="70px" mt="20px">
+                                <Text as="em" fontSize="35px">
+                                    {currentWeather.weather[0].main}
+                                </Text>
                             </Flex>
 
-                            <Flex
+                            <HStack
+                                mb="30px"
                                 justifyContent="center"
-                                gap={{ sm: 20, md: 15, lg: 20 }}
+                                gap={{ sm: 10, md: 10, lg: 10 }}
                             >
-                                <Text>Today</Text>
+                                <Text as="p" fontSize="18px" fontWeight="300">
+                                    Today
+                                </Text>
                                 {/* <Text>Fri 5 jan</Text> */}
-                                <Text>{date}</Text>
-                            </Flex>
-                            <Flex justifyContent="center" mt="1px">
-                                <FaLocationDot style={{ marginTop: "3px" }} />
-                                <Text>{currentWeather.name}</Text>
-                            </Flex>
+                                <Text as="p" fontSize="18px">
+                                    {date}
+                                </Text>
+                            </HStack>
+                            <HStack
+                                justifyContent="center"
+                                mt="10px"
+                                alignItems="center"
+                            >
+                                <FaLocationDot mr="10px" size="22px" />
+                                <Text fontSize="23px" fontWeight="500">
+                                    {currentWeather.name}
+                                </Text>
+                            </HStack>
                         </Flex>
                     </GridItem>
                 )}
@@ -1685,7 +1693,7 @@ const App = () => {
                                 >
                                     <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading mb="35px" size="md">
+                                            <Heading mb="25px" size="md">
                                                 <HStack
                                                     alignItems="center"
                                                     justifyContent="center"
@@ -1694,7 +1702,10 @@ const App = () => {
                                                     <Text>Wind status</Text>
                                                 </HStack>
                                             </Heading>
-                                            <Text>
+                                            <Text
+                                                fontSize="20px"
+                                                fontWeight="500"
+                                            >
                                                 {currentWeather.wind.speed} m/s
                                             </Text>
                                             <Text>
@@ -1723,7 +1734,11 @@ const App = () => {
                                                     currentWeather.main.humidity
                                                 )}
                                             />
-                                            <Text as="i" fontSize="lg">
+                                            <Text
+                                                as="i"
+                                                fontSize="25px"
+                                                fontWeight="500"
+                                            >
                                                 {parseInt(
                                                     currentWeather.main.humidity
                                                 )}
@@ -1733,7 +1748,7 @@ const App = () => {
                                     </Card>
                                     <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading mb="35px" size="md">
+                                            <Heading mb="30px" size="md">
                                                 <HStack
                                                     alignItems="center"
                                                     justifyContent="center"
@@ -1742,7 +1757,11 @@ const App = () => {
                                                     <Text>Visibility</Text>
                                                 </HStack>
                                             </Heading>
-                                            <Text fontSize="lg" as="i">
+                                            <Text
+                                                fontSize="25px"
+                                                as="i"
+                                                fontWeight="500"
+                                            >
                                                 {parseInt(
                                                     currentWeather.visibility
                                                 ) / 1000}{" "}
@@ -1752,7 +1771,7 @@ const App = () => {
                                     </Card>
                                     <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading mb="35px" size="md">
+                                            <Heading mb="30px" size="md">
                                                 <HStack
                                                     alignItems="center"
                                                     justifyContent="center"
@@ -1761,7 +1780,11 @@ const App = () => {
                                                     <Text>Air pressure</Text>
                                                 </HStack>
                                             </Heading>
-                                            <Text as="i" fontSize="lg">
+                                            <Text
+                                                as="i"
+                                                fontSize="25px"
+                                                fontWeight="500"
+                                            >
                                                 {parseInt(
                                                     currentWeather.main.pressure
                                                 ) / 1000}{" "}
@@ -1771,7 +1794,7 @@ const App = () => {
                                     </Card>
                                     <Card bg={sidebarColor}>
                                         <CardBody textAlign="center">
-                                            <Heading mb="35px" size="md">
+                                            <Heading mb="30px" size="md">
                                                 <HStack
                                                     alignItems="center"
                                                     justifyContent="center"
@@ -1780,7 +1803,11 @@ const App = () => {
                                                     <Text>Cloudiness</Text>
                                                 </HStack>
                                             </Heading>
-                                            <Text as="i" fontSize="lg">
+                                            <Text
+                                                as="i"
+                                                fontSize="25px"
+                                                fontWeight="600"
+                                            >
                                                 {currentWeather.clouds.all} %
                                             </Text>
                                         </CardBody>
@@ -1980,12 +2007,6 @@ const App = () => {
                     ) : null}
 
                     {sidebarStatus[2] === 1 ? (
-                        <Box>
-                            <Text>Air pollution</Text>
-                        </Box>
-                    ) : null}
-
-                    {sidebarStatus[3] === 1 ? (
                         <RecentLocations
                             handleWeatherSearch={handleWeatherSearch}
                         />

@@ -1562,7 +1562,7 @@ const App = () => {
                         colSpan={{ base: "12", md: "4", xl: "3" }}
                         minHeight="100vh"
                         p="20px"
-                        bg="purple.600"
+                        bg={sidebarColor}
                     >
                         <Flex direction="column" px={5}>
                             <Flex>
@@ -1626,14 +1626,19 @@ const App = () => {
                                                 p="0px"
                                                 textAlign="center"
                                                 display="flex"
+                                                bg={sidebarColor}
                                             >
                                                 <CardBody>
                                                     <Heading size="sm">
-                                                        {
-                                                            item.dt_txt.split(
-                                                                " "
-                                                            )[0]
-                                                        }
+                                                        <Text
+                                                            as="i"
+                                                            fontWeight="300"
+                                                        >
+                                                            {item.dt_txt
+                                                                .split(" ")[0]
+                                                                .split("-")
+                                                                .join(" / ")}
+                                                        </Text>
                                                     </Heading>
 
                                                     <Image
@@ -1643,20 +1648,27 @@ const App = () => {
                                                     ></Image>
 
                                                     <Flex m="3px 10px">
-                                                        <Text>
+                                                        <Text
+                                                            as=""
+                                                            fontSize="lg"
+                                                            color="whiteAlpha.800"
+                                                        >
                                                             {parseInt(
                                                                 item.main.temp
                                                             ) - 273}{" "}
                                                             °C
                                                         </Text>
                                                         <Spacer />
-                                                        <Text>
-                                                            {parseInt(
-                                                                item.main
-                                                                    .humidity
-                                                            )}
-                                                            %
-                                                        </Text>
+                                                        <HStack spacing={0}>
+                                                            <Text color="whiteAlpha.700">
+                                                                {parseInt(
+                                                                    item.main
+                                                                        .humidity
+                                                                )}
+                                                                %
+                                                            </Text>
+                                                            <IoWater  />
+                                                        </HStack>
                                                     </Flex>
                                                 </CardBody>
                                             </Card>
@@ -1787,9 +1799,15 @@ const App = () => {
                                             </Heading>
                                             <Box>
                                                 <Box>
-                                                    <HStack justifyContent="center" mb="10px">
+                                                    <HStack
+                                                        justifyContent="center"
+                                                        mb="10px"
+                                                    >
                                                         <BsThermometerSnow size="20px" />
-                                                        <Text  as="i" fontSize="lg">
+                                                        <Text
+                                                            as="i"
+                                                            fontSize="lg"
+                                                        >
                                                             Min :{" "}
                                                             {parseInt(
                                                                 currentWeather
@@ -1799,12 +1817,14 @@ const App = () => {
                                                             °C
                                                         </Text>
                                                     </HStack>
-                                                   
                                                 </Box>
                                                 <Box>
                                                     <HStack justifyContent="center">
                                                         <BsThermometerSun size="20px" />
-                                                        <Text as="i" fontSize="lg">
+                                                        <Text
+                                                            as="i"
+                                                            fontSize="lg"
+                                                        >
                                                             Max :{" "}
                                                             {parseInt(
                                                                 currentWeather
@@ -1814,7 +1834,6 @@ const App = () => {
                                                             °C
                                                         </Text>
                                                     </HStack>
-                                                   
                                                 </Box>
                                             </Box>
                                         </CardBody>

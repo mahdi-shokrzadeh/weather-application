@@ -1,10 +1,5 @@
 import "./App.css";
 import {
-    Accordion,
-    AccordionButton,
-    AccordionIcon,
-    AccordionItem,
-    AccordionPanel,
     Box,
     Button,
     Card,

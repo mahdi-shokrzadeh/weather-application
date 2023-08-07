@@ -40,7 +40,7 @@ const DetailedForecast = ({currentWeather , filteredForecast , sidebarColor}) =>
                                             alignContent="center"
                                         >
                                             <Image
-                                                src={`../../assets/weatherImages/${item.weather[0].icon}.png`}
+                                                src={`../../../assets/weatherImages/${item.weather[0].icon}.png`}
                                                 mr="10px"
                                             />
                                             <Flex

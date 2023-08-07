@@ -435,7 +435,7 @@ const App = () => {
                                 <Image
                                     boxSize="120px"
                                     
-                                    src={`/assets/weatherImages/${currentWeather.weather[0].icon}.png`}
+                                    src={`../assets/weatherImages/${currentWeather.weather[0].icon}.png`}
                                 />
                             </Flex>
                             <Flex justifyContent="center">
@@ -507,7 +507,7 @@ const App = () => {
                                                     <Image
                                                         boxSize="80px"
                                                         m="0 auto"
-                                                        src={`/assets/weatherImages/${item.weather[0].icon}.png`}
+                                                        src={`../assets/weatherImages/${item.weather[0].icon}.png`}
                                                     ></Image>
 
                                                     <Flex m="3px 10px">

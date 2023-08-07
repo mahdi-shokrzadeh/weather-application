@@ -438,6 +438,7 @@ const App = () => {
                                     src={`../assets/weatherImages/${currentWeather.weather[0].icon}.png`}
                                 />
                             </Flex>
+                            
                             <Flex justifyContent="center">
                                 <Text as="b" fontSize="45px">
                                     {parseInt(currentWeather.main.temp) - 273}{" "}

@@ -25,19 +25,12 @@ import {
     List,
     ListIcon,
     ListItem,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
     Progress,
     SimpleGrid,
     Spacer,
-    Spinner,
     Switch,
     Text,
+    Tooltip,
     useColorMode,
     useColorModeValue,
     useDisclosure,
@@ -65,7 +58,7 @@ import {
     IoTimerOutline,
     IoWater,
 } from "react-icons/io5";
-import { TbClockSearch } from "react-icons/tb";
+import { TbClockSearch, TbMoonStars, TbSunFilled } from "react-icons/tb";
 import { BsThermometerSnow, BsThermometerSun } from "react-icons/bs";
 import { getCities } from "../services/CityService/cityService";
 import {
@@ -1291,7 +1284,7 @@ const App = () => {
     // current weekday and month
     const [date, setDate] = useState("");
     // IP address
-    const [IpAddress , setIpAddress] = useState("");
+    const [IpAddress, setIpAddress] = useState("");
 
     const searchInputRef = useRef(null);
     const loadingBarRef = useRef(null);
@@ -1307,13 +1300,23 @@ const App = () => {
 
     // color mode values
 
-    const sidebarColor = useColorModeValue("yellow.50", "blue.900");
+    const sidebarColor = useColorModeValue(
+        // "pink.200",
+        "orange.50" ,
+         "blue.900");
     const mainSectionColor = useColorModeValue(
-        "whiteAlpha.50",
+        "gray.200",
+        // "cyan.100" ,
         "BlackAlpha.900"
     );
-    const sidebarButtonColor = useColorModeValue("white", "whiteAlpha.400");
-    const MenuButtonColor = useColorModeValue("" , "") ;
+    const cardFooterColor = useColorModeValue(
+        "black" ,"WhiteAlpha.700"
+    );
+    const cardFooterColor2 = useColorModeValue(
+        "black" ,"WhiteAlpha.800"
+    );
+    const sidebarButtonColor = useColorModeValue("yellow.100", "whiteAlpha.400");
+    const MenuButtonColor = useColorModeValue("", "");
 
     //  toast
     const toast = useToast();
@@ -1429,22 +1432,26 @@ const App = () => {
 
     //  handle Ip function
     const handleIp = async () => {
-
         try {
             const res = await getIPAddress();
             setIpAddress(res.data.ip);
-            const {data} = await sendIpAddress(res.data.ip) ;
+            const { data } = await sendIpAddress(res.data.ip);
             const city = {
-                city : data.city ,
-                latitude : data.latitude ,
-                longitude : data.longitude 
-            }            
+                city: data.city,
+                latitude: data.latitude,
+                longitude: data.longitude,
+            };
             handleWeatherSearch(city);
-        }catch(err){
+            toast({
+                title: "Weather is applied based on your location.",
+                status: "success",
+                duration: 5000,
+                isClosable: false,
+            });
+        } catch (err) {
             console.log(err);
         }
-
-    }
+    };
     useEffect(() => {
         const d = new Date();
         setDate(
@@ -1453,8 +1460,7 @@ const App = () => {
 
         //   IpAddress proccess :
         loadingBarRef.current.continuousStart();
-        
-        
+
         // handleIp();
         loadingBarRef.current.complete();
     }, []);
@@ -1486,7 +1492,7 @@ const App = () => {
 
     return (
         <>
-            <LoadingBar color="#38B2AC" ref={loadingBarRef} />
+            <LoadingBar color="#38B2AC" height="4px" ref={loadingBarRef} />
 
             <SearchModal
                 searchInputRef={searchInputRef}
@@ -1519,13 +1525,17 @@ const App = () => {
                                     bg={sidebarButtonColor}
                                 />
                                 <Spacer />
-                                <Switch
-                                    onChange={() => {
-                                        toggleColorMode();
-                                        setThemeToggler(!themeToggler);
-                                    }}
-                                    isChecked={themeToggler ? true : false}
-                                />
+                                <HStack spacing={1}>
+                                    <TbSunFilled />
+                                    <Switch
+                                        onChange={() => {
+                                            toggleColorMode();
+                                            setThemeToggler(!themeToggler);
+                                        }}
+                                        isChecked={themeToggler ? true : false}
+                                    />
+                                    <TbMoonStars />
+                                </HStack>
                             </HStack>
                             <Box mt="15px">
                                 <Button w="100%" onClick={onOpen}>
@@ -1545,7 +1555,11 @@ const App = () => {
                                     <ListItem>
                                         <Button
                                             onClick={() => sidebarMenu(0)}
-                                            isActive={sidebarStatus[0] === 1 ? true : false}
+                                            isActive={
+                                                sidebarStatus[0] === 1
+                                                    ? true
+                                                    : false
+                                            }
                                             w="100%"
                                             bg={MenuButtonColor}
                                             leftIcon={<TiWeatherPartlySunny />}
@@ -1557,7 +1571,11 @@ const App = () => {
                                         <Button
                                             w="100%"
                                             bg={MenuButtonColor}
-                                            isActive={sidebarStatus[1] === 1 ? true : false}
+                                            isActive={
+                                                sidebarStatus[1] === 1
+                                                    ? true
+                                                    : false
+                                            }
                                             onClick={() => sidebarMenu(1)}
                                             leftIcon={<TiWeatherSnow />}
                                         >
@@ -1568,7 +1586,11 @@ const App = () => {
                                         <Button
                                             w="100%"
                                             bg={MenuButtonColor}
-                                            isActive={sidebarStatus[2] === 1 ? true : false}
+                                            isActive={
+                                                sidebarStatus[2] === 1
+                                                    ? true
+                                                    : false
+                                            }
                                             onClick={() => sidebarMenu(2)}
                                             leftIcon={<TbClockSearch />}
                                         >
@@ -1601,13 +1623,25 @@ const App = () => {
                                     Search location
                                 </Button>
                                 <Spacer />
-                                <IconButton
-                                    size="sm"
-                                    bg={sidebarButtonColor}
-                                    variant="solid"
-                                    style={{ borderRadius: "20px" }}
-                                    icon={<FaLocationCrosshairs size={20} />}
-                                />
+                                <Tooltip
+                                    label="your location weather"
+                                    aria-label="A tooltip"
+                                    bg="yellow.500"
+                                    pb="3px"
+                                >
+                                    <IconButton
+                                        size="sm"
+                                        bg={sidebarButtonColor}
+                                        variant="solid"
+                                        style={{ borderRadius: "20px" }}
+                                        onClick={() => {
+                                            handleIp();
+                                        }}
+                                        icon={
+                                            <FaLocationCrosshairs size={20} />
+                                        }
+                                    />
+                                </Tooltip>
                             </Flex>
 
                             <Flex justifyContent="center" mb="50px">
@@ -1673,7 +1707,7 @@ const App = () => {
                                                     <Heading size="sm">
                                                         <Text
                                                             as="i"
-                                                            fontWeight="300"
+                                                            fontWeight="350"
                                                         >
                                                             {item.dt_txt
                                                                 .split(" ")[0]
@@ -1692,7 +1726,7 @@ const App = () => {
                                                         <Text
                                                             as=""
                                                             fontSize="lg"
-                                                            color="whiteAlpha.800"
+                                                            color={cardFooterColor2}
                                                         >
                                                             {parseInt(
                                                                 item.main.temp
@@ -1701,7 +1735,7 @@ const App = () => {
                                                         </Text>
                                                         <Spacer />
                                                         <HStack spacing={0}>
-                                                            <Text color="whiteAlpha.700">
+                                                            <Text color={cardFooterColor}>
                                                                 {parseInt(
                                                                     item.main
                                                                         .humidity
@@ -1925,13 +1959,15 @@ const App = () => {
                                                             flex="1"
                                                             textAlign="left"
                                                         >
-                                                            <Text as="p" >
-                                                            {
-                                                                item.dt_txt.split(
-                                                                    " "
-                                                                )[0].split("-")
-                                                                .join(" / ")
-                                                            }
+                                                            <Text as="p">
+                                                                {item.dt_txt
+                                                                    .split(
+                                                                        " "
+                                                                    )[0]
+                                                                    .split("-")
+                                                                    .join(
+                                                                        " / "
+                                                                    )}
                                                             </Text>
                                                         </Box>
                                                         <AccordionIcon />

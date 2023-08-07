@@ -20,7 +20,7 @@ const RecentLocations = ({handleWeatherSearch , sidebarMenu}) => {
                                         handleWeatherSearch(item);
                                         sidebarMenu(0) ;
                                         toast({
-                                            title: `${item.city} weather applied`,
+                                            title: `${item.city} weather applied.`,
                                             status: "info",
                                             duration: 3000,
                                             isClosable: false,

@@ -248,7 +248,7 @@ const App = () => {
         //   IpAddress proccess :
         loadingBarRef.current.continuousStart();
 
-        // handleIp();
+        handleIp();
         loadingBarRef.current.complete();
     }, []);
 
@@ -435,7 +435,7 @@ const App = () => {
                                 <Image
                                     boxSize="120px"
                                     
-                                    src={`"/assets/weatherImages/${currentWeather.weather[0].icon}.png`}
+                                    src={`/assets/weatherImages/${currentWeather.weather[0].icon}.png`}
                                 />
                             </Flex>
 

@@ -53,7 +53,7 @@ import { f, w } from "../assets/exampleData";
 import DetailedForecast from "./components/MenuComponents/DetailedForecast";
 
 const App = () => {
-    const [showMenu, setShowMenu] = useState(true);
+    const [showMenu, setShowMenu] = useState(false);
     const [showSearchSpinner, setShowSearchSpinner] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     // cities recieved from geo api
@@ -434,7 +434,8 @@ const App = () => {
                             <Flex justifyContent="center" mb="50px">
                                 <Image
                                     boxSize="120px"
-                                    src={`../assets/weatherImages/${currentWeather.weather[0].icon}.png`}
+                                    
+                                    src={`/assets/weatherImages/${currentWeather.weather[0].icon}.png`}
                                 />
                             </Flex>
                             <Flex justifyContent="center">
@@ -506,7 +507,7 @@ const App = () => {
                                                     <Image
                                                         boxSize="80px"
                                                         m="0 auto"
-                                                        src={`../assets/weatherImages/${item.weather[0].icon}.png`}
+                                                        src={`/assets/weatherImages/${item.weather[0].icon}.png`}
                                                     ></Image>
 
                                                     <Flex m="3px 10px">

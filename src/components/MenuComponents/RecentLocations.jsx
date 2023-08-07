@@ -1,7 +1,7 @@
 import {  Box, Button, Divider, Heading, useToast   } from "@chakra-ui/react";
 import {SlLocationPin} from "react-icons/sl";
 
-const RecentLocations = ({handleWeatherSearch}) => {
+const RecentLocations = ({handleWeatherSearch , sidebarMenu}) => {
 
     const toast = useToast();
 
@@ -18,6 +18,7 @@ const RecentLocations = ({handleWeatherSearch}) => {
                                       <Button 
                                       onClick={() => {
                                         handleWeatherSearch(item);
+                                        sidebarMenu(0) ;
                                         toast({
                                             title: `${item.city} weather applied`,
                                             status: "info",

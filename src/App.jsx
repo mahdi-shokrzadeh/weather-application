@@ -75,6 +75,7 @@ import {
 import SearchModal from "./components/SearchModal";
 import RecentLocations from "./components/MenuComponents/RecentLocations";
 import { SlLocationPin } from "react-icons/sl";
+import { getIPAddress, sendIpAddress } from "../services/IpService/ipService";
 
 // import {
 //     CITY_API_URL,
@@ -1289,6 +1290,8 @@ const App = () => {
 
     // current weekday and month
     const [date, setDate] = useState("");
+    // IP address
+    const [IpAddress , setIpAddress] = useState("");
 
     const searchInputRef = useRef(null);
     const loadingBarRef = useRef(null);
@@ -1424,11 +1427,36 @@ const App = () => {
         "Saturday",
     ];
 
+    //  handle Ip function
+    const handleIp = async () => {
+
+        try {
+            const res = await getIPAddress();
+            setIpAddress(res.data.ip);
+            const {data} = await sendIpAddress(res.data.ip) ;
+            const city = {
+                city : data.city ,
+                latitude : data.latitude ,
+                longitude : data.longitude 
+            }            
+            handleWeatherSearch(city);
+        }catch(err){
+            console.log(err);
+        }
+
+    }
     useEffect(() => {
         const d = new Date();
         setDate(
             `${weekday[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`
         );
+
+        //   IpAddress proccess :
+        loadingBarRef.current.continuousStart();
+        
+        
+        // handleIp();
+        loadingBarRef.current.complete();
     }, []);
 
     // debouncing for search input
@@ -2023,6 +2051,7 @@ const App = () => {
                     {sidebarStatus[2] === 1 ? (
                         <RecentLocations
                             handleWeatherSearch={handleWeatherSearch}
+                            sidebarMenu={sidebarMenu}
                         />
                     ) : null}
                 </GridItem>

@@ -1296,26 +1296,31 @@ const App = () => {
 
     // dark mode featur
     const { toggleColorMode } = useColorMode();
-    const [themeToggler, setThemeToggler] = useState(false);
+    const [themeToggler, setThemeToggler] = useState(
+        localStorage.getItem("chakra-ui-color-mode") === null ||
+            localStorage.getItem("chakra-ui-color-mode") === "light"
+            ? false
+            : true
+    );
 
     // color mode values
 
     const sidebarColor = useColorModeValue(
         // "pink.200",
-        "orange.50" ,
-         "blue.900");
+        "orange.50",
+        "blue.900"
+    );
     const mainSectionColor = useColorModeValue(
         "gray.200",
         // "cyan.100" ,
         "BlackAlpha.900"
     );
-    const cardFooterColor = useColorModeValue(
-        "black" ,"WhiteAlpha.700"
+    const cardFooterColor = useColorModeValue("black", "WhiteAlpha.700");
+    const cardFooterColor2 = useColorModeValue("black", "WhiteAlpha.800");
+    const sidebarButtonColor = useColorModeValue(
+        "yellow.100",
+        "whiteAlpha.400"
     );
-    const cardFooterColor2 = useColorModeValue(
-        "black" ,"WhiteAlpha.800"
-    );
-    const sidebarButtonColor = useColorModeValue("yellow.100", "whiteAlpha.400");
     const MenuButtonColor = useColorModeValue("", "");
 
     //  toast
@@ -1726,7 +1731,9 @@ const App = () => {
                                                         <Text
                                                             as=""
                                                             fontSize="lg"
-                                                            color={cardFooterColor2}
+                                                            color={
+                                                                cardFooterColor2
+                                                            }
                                                         >
                                                             {parseInt(
                                                                 item.main.temp
@@ -1735,7 +1742,11 @@ const App = () => {
                                                         </Text>
                                                         <Spacer />
                                                         <HStack spacing={0}>
-                                                            <Text color={cardFooterColor}>
+                                                            <Text
+                                                                color={
+                                                                    cardFooterColor
+                                                                }
+                                                            >
                                                                 {parseInt(
                                                                     item.main
                                                                         .humidity
@@ -2012,6 +2023,7 @@ const App = () => {
                                                                 alignItems="center"
                                                             >
                                                                 <Text>
+                                                                    -
                                                                     Description
                                                                     :{" "}
                                                                     {
@@ -2021,7 +2033,8 @@ const App = () => {
                                                                     }
                                                                 </Text>
                                                                 <Text>
-                                                                    Wind speed :{" "}
+                                                                    - Wind speed
+                                                                    :{" "}
                                                                     {
                                                                         item
                                                                             .wind
@@ -2030,7 +2043,7 @@ const App = () => {
                                                                     m/s
                                                                 </Text>
                                                                 <Text>
-                                                                    Wind
+                                                                    - Wind
                                                                     direction :{" "}
                                                                     {
                                                                         item
@@ -2045,7 +2058,7 @@ const App = () => {
                                                                 alignItems="center"
                                                             >
                                                                 <Text>
-                                                                    Humidity :{" "}
+                                                                    - Humidity :{" "}
                                                                     {parseInt(
                                                                         item
                                                                             .main
@@ -2054,7 +2067,8 @@ const App = () => {
                                                                     %
                                                                 </Text>
                                                                 <Text>
-                                                                    Visibility :{" "}
+                                                                    - Visibility
+                                                                    :{" "}
                                                                     {parseInt(
                                                                         item.visibility
                                                                     ) /
@@ -2062,8 +2076,8 @@ const App = () => {
                                                                     km
                                                                 </Text>
                                                                 <Text>
-                                                                    Air pressure
-                                                                    :{" "}
+                                                                    - Air
+                                                                    pressure :{" "}
                                                                     {parseInt(
                                                                         item
                                                                             .main

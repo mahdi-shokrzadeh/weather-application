@@ -1310,6 +1310,7 @@ const App = () => {
         "BlackAlpha.900"
     );
     const sidebarButtonColor = useColorModeValue("white", "whiteAlpha.400");
+    const MenuButtonColor = useColorModeValue("" , "") ;
 
     //  toast
     const toast = useToast();
@@ -1337,7 +1338,6 @@ const App = () => {
         });
         array[index] = 1;
         setSidebarStatus([...array]);
-        console.log(sidebarStatus);
     };
 
     // handle weather search
@@ -1517,7 +1517,9 @@ const App = () => {
                                     <ListItem>
                                         <Button
                                             onClick={() => sidebarMenu(0)}
+                                            isActive={sidebarStatus[0] === 1 ? true : false}
                                             w="100%"
+                                            bg={MenuButtonColor}
                                             leftIcon={<TiWeatherPartlySunny />}
                                         >
                                             <Text>current weather</Text>
@@ -1526,6 +1528,8 @@ const App = () => {
                                     <ListItem>
                                         <Button
                                             w="100%"
+                                            bg={MenuButtonColor}
+                                            isActive={sidebarStatus[1] === 1 ? true : false}
                                             onClick={() => sidebarMenu(1)}
                                             leftIcon={<TiWeatherSnow />}
                                         >
@@ -1535,6 +1539,8 @@ const App = () => {
                                     <ListItem>
                                         <Button
                                             w="100%"
+                                            bg={MenuButtonColor}
+                                            isActive={sidebarStatus[2] === 1 ? true : false}
                                             onClick={() => sidebarMenu(2)}
                                             leftIcon={<TbClockSearch />}
                                         >
@@ -1872,13 +1878,18 @@ const App = () => {
                     {sidebarStatus[1] === 1 ? (
                         <Box m="0px 15px">
                             <Heading mt="20px" mb="15px">
-                                Detailed forecast
+                                Detailed forecast of {currentWeather.name}
                             </Heading>
                             <Box mt="30px" p="0 50px">
                                 <Accordion allowMultiple>
                                     {filteredForecast.map((item) => {
                                         return (
-                                            <AccordionItem key={item.id}>
+                                            <AccordionItem
+                                                m="12px 0px"
+                                                style={{ borderRadius: "10px" }}
+                                                key={item.id}
+                                                bg={sidebarColor}
+                                            >
                                                 <h2>
                                                     <AccordionButton>
                                                         <Box
@@ -1886,17 +1897,20 @@ const App = () => {
                                                             flex="1"
                                                             textAlign="left"
                                                         >
+                                                            <Text as="p" >
                                                             {
                                                                 item.dt_txt.split(
                                                                     " "
-                                                                )[0]
+                                                                )[0].split("-")
+                                                                .join(" / ")
                                                             }
+                                                            </Text>
                                                         </Box>
                                                         <AccordionIcon />
                                                     </AccordionButton>
                                                 </h2>
                                                 <AccordionPanel pb={4}>
-                                                    <Box>
+                                                    <Box mb="20px">
                                                         <Flex
                                                             justifyContent="center"
                                                             alignContent="center"

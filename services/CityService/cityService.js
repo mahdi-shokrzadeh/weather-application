@@ -4,7 +4,7 @@ import axios from "axios";
 const cityApiOptions = {
     method: "GET",
     headers: {
-        "X-RapidAPI-Key": "9335c54581msh921529f6b3e0dd6p180416jsn9f01106406b9",
+        "X-RapidAPI-Key": "",
         "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
     },
 };
